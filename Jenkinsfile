@@ -65,10 +65,13 @@ pipeline {
     }
     
     post {
-        always {
-            // Clean up
-            sh 'gcloud auth revoke --all'
-            cleanWs()
+        success {
+            script {
+                if (currentBuild.getBuildCauses().toString().contains('Authenticate to GCP') && currentBuild.currentResult == 'SUCCESS') {
+                    sh 'gcloud auth revoke --all'
+                    cleanWs()
+                }
+            }
         }
     }
 }
