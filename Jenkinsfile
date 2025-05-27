@@ -43,9 +43,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def imageTag = "eu.${REGION}.artifactregistry.googleapis.com/${PROJECT_ID}/${REGISTRY_NAME}/${APP_NAME}:${BUILD_NUMBER}"
+                    def imageTag = "eu.${REGION}.artifactregistry.googleapis.com/${PROJECT_ID}/${REGISTRY_NAME}/${APP_NAME}:${BUILD_NUMBER}".toLowerCase()
                     sh """
-                        gcloud auth configure-docker ${REGION}-docker.pkg.dev
+                        gcloud auth configure-docker ${REGION}-docker.pkg.dev --quiet
                         docker build -t ${imageTag} .
                     """
                 }
@@ -55,7 +55,7 @@ pipeline {
         stage('Push to Artifact Registry') {
             steps {
                 script {
-                    def imageTag = "eu.${REGION}.artifactregistry.googleapis.com/${PROJECT_ID}/${REGISTRY_NAME}/${APP_NAME}:${BUILD_NUMBER}"
+                    def imageTag = "eu.${REGION}.artifactregistry.googleapis.com/${PROJECT_ID}/${REGISTRY_NAME}/${APP_NAME}:${BUILD_NUMBER}".toLowerCase()
                     sh "docker push ${imageTag}"
                 }
             }
