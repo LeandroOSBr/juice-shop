@@ -26,9 +26,9 @@ pipeline {
                         echo "Usando credencial com ID: ${CREDENTIALS_ID}"
                         withCredentials([file(credentialsId: CREDENTIALS_ID, variable: 'GC_KEY')]) {
                             echo "Credenciais carregadas, ativando conta de serviço..."
-                            sh "gcloud auth activate-service-account --key-file=\"${GC_KEY}\" --verbose"
+                            sh "gcloud auth activate-service-account --key-file=\"${GC_KEY}\""
                             echo "Configurando projeto GCP..."
-                            sh "gcloud config set project ${PROJECT_ID} --verbose"
+                            sh "gcloud config set project ${PROJECT_ID}"
                             echo "Autenticação concluída com sucesso"
                         }
                     } catch (Exception e) {
