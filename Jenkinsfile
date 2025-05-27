@@ -5,7 +5,7 @@ pipeline {
         PROJECT_ID = credentials('GCP_PROJECT_ID')
         CLUSTER_NAME = credentials('GKE_CLUSTER_NAME')
         LOCATION = credentials('GKE_CLUSTER_LOCATION')
-        CREDENTIALS_ID = credentials('GCP_CREDENTIALS_ID')
+        CREDENTIALS_ID = 'GCP_CREDENTIALS_ID'
         REGISTRY_NAME = credentials('ARTIFACT_REGISTRY_NAME')
         REGION = credentials('GCP_REGION')
         APP_NAME = credentials('APP_NAME')
@@ -23,7 +23,8 @@ pipeline {
                 script {
                     try {
                         echo "Iniciando autenticação no GCP..."
-                        withCredentials([file(credentialsId: env.CREDENTIALS_ID, variable: 'GC_KEY')]) {
+                        echo "Usando credencial com ID: ${CREDENTIALS_ID}"
+                        withCredentials([file(credentialsId: CREDENTIALS_ID, variable: 'GC_KEY')]) {
                             echo "Credenciais carregadas, ativando conta de serviço..."
                             sh "gcloud auth activate-service-account --key-file=\"${GC_KEY}\" --verbose"
                             echo "Configurando projeto GCP..."
