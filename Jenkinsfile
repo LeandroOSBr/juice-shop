@@ -21,9 +21,19 @@ pipeline {
         stage('Authenticate to GCP') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: env.CREDENTIALS_ID, variable: 'GC_KEY')]) {
-                        sh "gcloud auth activate-service-account --key-file=\"${GC_KEY}\""
-                        sh "gcloud config set project ${PROJECT_ID}"
+                    try {
+                        echo "Iniciando autenticação no GCP..."
+                        withCredentials([file(credentialsId: env.CREDENTIALS_ID, variable: 'GC_KEY')]) {
+                            echo "Credenciais carregadas, ativando conta de serviço..."
+                            sh "gcloud auth activate-service-account --key-file=\"${GC_KEY}\" --verbose"
+                            echo "Configurando projeto GCP..."
+                            sh "gcloud config set project ${PROJECT_ID} --verbose"
+                            echo "Autenticação concluída com sucesso"
+                        }
+                    } catch (Exception e) {
+                        echo "Erro durante a autenticação: ${e.message}"
+                        currentBuild.result = 'FAILURE'
+                        throw e
                     }
                 }
             }
