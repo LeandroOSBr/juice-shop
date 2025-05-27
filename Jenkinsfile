@@ -9,6 +9,7 @@ pipeline {
         REGISTRY_NAME = credentials('ARTIFACT_REGISTRY_NAME')
         REGION = credentials('GCP_REGION')
         APP_NAME = credentials('APP_NAME')
+        REPO_NAME = credentials('REPO_NAME')
     }
     
     stages {
@@ -43,7 +44,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def imageTag = "eu.${REGION}.artifactregistry.googleapis.com/${PROJECT_ID}/${REGISTRY_NAME}/${APP_NAME}:${BUILD_NUMBER}".toLowerCase()
+                    def imageTag = "${REGION}.pkg.dev/${PROJECT_ID}/${REGISTRY_NAME}/${REPO_NAME}:${BUILD_NUMBER}".toLowerCase()
                     sh """
                         gcloud auth configure-docker ${REGION}-docker.pkg.dev --quiet
                         docker build -t ${imageTag} .
@@ -55,7 +56,7 @@ pipeline {
         stage('Push to Artifact Registry') {
             steps {
                 script {
-                    def imageTag = "eu.${REGION}.artifactregistry.googleapis.com/${PROJECT_ID}/${REGISTRY_NAME}/${APP_NAME}:${BUILD_NUMBER}".toLowerCase()
+                    def imageTag = "${REGION}.pkg.dev/${PROJECT_ID}/${REGISTRY_NAME}/${REPO_NAME}:${BUILD_NUMBER}".toLowerCase()
                     sh "docker push ${imageTag}"
                 }
             }
@@ -68,7 +69,7 @@ pipeline {
                         gcloud container clusters get-credentials ${CLUSTER_NAME} --region ${LOCATION} --project ${PROJECT_ID}
                         
                         # Update kubernetes deployment with new image
-                        kubectl set image deployment/${APP_NAME} ${APP_NAME}=eu.${REGION}.artifactregistry.googleapis.com/${PROJECT_ID}/${REGISTRY_NAME}/${APP_NAME}:${BUILD_NUMBER}
+                        kubectl set image deployment/${APP_NAME} ${APP_NAME}="${REGION}.pkg.dev/${PROJECT_ID}/${REGISTRY_NAME}/${REPO_NAME}:${BUILD_NUMBER}".toLowerCase()
                     """
                 }
             }
