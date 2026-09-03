@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Juice-shop-alb with WAF</title>
+<style>
+/* === normalize.css === */
+/*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
+
+/* Document
+   ========================================================================== */
+
+/**
+ * 1. Correct the line height in all browsers.
+ * 2. Prevent adjustments of font size after orientation changes in iOS.
+ */
+
+html {
+  line-height: 1.15; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+}
+
+/* Sections
+   ========================================================================== */
+
+/**
+ * Remove the margin in all browsers.
+ */
+
+body {
+  margin: 0;
+}
+
+/**
+ * Render the `main` element consistently in IE.
+ */
+
+main {
+  display: block;
+}
+
+/**
+ * Correct the font size and margin on `h1` elements within `section` and
+ * `article` contexts in Chrome, Firefox, and Safari.
+ */
+
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+
+/* Grouping content
+   ========================================================================== */
+
+/**
+ * 1. Add the correct box sizing in Firefox.
+ * 2. Show the overflow in Edge and IE.
+ */
+
+hr {
+  box-sizing: content-box; /* 1 */
+  height: 0; /* 1 */
+  overflow: visible; /* 2 */
+}
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+
+pre {
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/* Text-level semantics
+   ========================================================================== */
+
+/**
+ * Remove the gray background on active links in IE 10.
+ */
+
+a {
+  background-color: transparent;
+}
+
+/**
+ * 1. Remove the bottom border in Chrome 57-
+ * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.
+ */
+
+abbr[title] {
+  border-bottom: none; /* 1 */
+  text-decoration: underline; /* 2 */
+  text-decoration: underline dotted; /* 2 */
+}
+
+/**
+ * Add the correct font weight in Chrome, Edge, and Safari.
+ */
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/**
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
+
+code,
+kbd,
+samp {
+  font-family: monospace, monospace; /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/**
+ * Add the correct font size in all browsers.
+ */
+
+small {
+  font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` elements from affecting the line height in
+ * all browsers.
+ */
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/* Embedded content
+   ========================================================================== */
+
+/**
+ * Remove the border on images inside links in IE 10.
+ */
+
+img {
+  border-style: none;
+}
+
+/* Forms
+   ========================================================================== */
+
+/**
+ * 1. Change the font styles in all browsers.
+ * 2. Remove the margin in Firefox and Safari.
+ */
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  line-height: 1.15; /* 1 */
+  margin: 0; /* 2 */
+}
+
+/**
+ * Show the overflow in IE.
+ * 1. Show the overflow in Edge.
+ */
+
+button,
+input { /* 1 */
+  overflow: visible;
+}
+
+/**
+ * Remove the inheritance of text transform in Edge, Firefox, and IE.
+ * 1. Remove the inheritance of text transform in Firefox.
+ */
+
+button,
+select { /* 1 */
+  text-transform: none;
+}
+
+/**
+ * Correct the inability to style clickable types in iOS and Safari.
+ */
+
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+  -webkit-appearance: button;
+}
+
+/**
+ * Remove the inner border and padding in Firefox.
+ */
+
+button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+
+/**
+ * Restore the focus styles unset by the previous rule.
+ */
+
+button:-moz-focusring,
+[type="button"]:-moz-focusring,
+[type="reset"]:-moz-focusring,
+[type="submit"]:-moz-focusring {
+  outline: 1px dotted ButtonText;
+}
+
+/**
+ * Correct the padding in Firefox.
+ */
+
+fieldset {
+  padding: 0.35em 0.75em 0.625em;
+}
+
+/**
+ * 1. Correct the text wrapping in Edge and IE.
+ * 2. Correct the color inheritance from `fieldset` elements in IE.
+ * 3. Remove the padding so developers are not caught out when they zero out
+ *    `fieldset` elements in all browsers.
+ */
+
+legend {
+  box-sizing: border-box; /* 1 */
+  color: inherit; /* 2 */
+  display: table; /* 1 */
+  max-width: 100%; /* 1 */
+  padding: 0; /* 3 */
+  white-space: normal; /* 1 */
+}
+
+/**
+ * Add the correct vertical alignment in Chrome, Firefox, and Opera.
+ */
+
+progress {
+  vertical-align: baseline;
+}
+
+/**
+ * Remove the default vertical scrollbar in IE 10+.
+ */
+
+textarea {
+  overflow: auto;
+}
+
+/**
+ * 1. Add the correct box sizing in IE 10.
+ * 2. Remove the padding in IE 10.
+ */
+
+[type="checkbox"],
+[type="radio"] {
+  box-sizing: border-box; /* 1 */
+  padding: 0; /* 2 */
+}
+
+/**
+ * Correct the cursor style of increment and decrement buttons in Chrome.
+ */
+
+[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/**
+ * 1. Correct the odd appearance in Chrome and Safari.
+ * 2. Correct the outline style in Safari.
+ */
+
+[type="search"] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/**
+ * Remove the inner padding in Chrome and Safari on macOS.
+ */
+
+[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/**
+ * 1. Correct the inability to style clickable types in iOS and Safari.
+ * 2. Change font properties to `inherit` in Safari.
+ */
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/* Interactive
+   ========================================================================== */
+
+/*
+ * Add the correct display in Edge, IE 10+, and Firefox.
+ */
+
+details {
+  display: block;
+}
+
+/*
+ * Add the correct display in all browsers.
+ */
+
+summary {
+  display: list-item;
+}
+
+/* Misc
+   ========================================================================== */
+
+/**
+ * Add the correct display in IE 10+.
+ */
+
+template {
+  display: none;
+}
+
+/**
+ * Add the correct display in IE 10.
+ */
+
+[hidden] {
+  display: none;
+}
+
+
+/* === themes/original/main.css === */
+*, *::after, *::before {
+   box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	margin: 0;
+	padding: 0;
+}
+
+pre, ul {
+	margin: 0;
+}
+
+ol {
+	list-style-type: none;
+}
+
+h1 {
+	font-size: 3em;
+}
+
+h2 {
+	font-size: 2em;
+}
+
+h3, h4, h5, h6 {
+	font-size: 1em;
+}
+
+html {
+	box-sizing: border-box;
+	font-family: Verdana, sans-serif;
+	line-height: 1.5;
+}
+
+body {
+	margin: 1.5em 0;
+}
+
+@media screen and (min-width: 50em) {
+	body {
+		margin: 1.5em 2ch;
+		padding: 1.5em 2ch;
+	}
+}
+
+a:active, header a:active {
+	outline-style: solid;
+}
+
+header, main {
+	margin: 0 auto;
+	max-width: 90ch;
+	padding: 1.5em 4ch;
+}
+
+header {
+	border-radius: .25em .25em 0 0;
+}
+
+main {
+	border-radius: 0 0 .25em .25em;
+}
+
+summary {
+	cursor: pointer;
+}
+
+.contents {
+	margin-top: 1.5em;
+}
+
+main > section {
+	margin-bottom: 4.5em;
+}
+
+.about-this-report > section {
+	margin-bottom: 3em;
+}
+
+.summaries section {
+	margin-bottom: 3em;
+}
+
+h2 {
+	margin-bottom: .75em;
+}
+
+h3 {
+	margin-bottom: 1.5em;
+}
+
+h4 {
+	margin-bottom: 1.5em;
+}
+
+.report-parameters--container h4 {
+	margin-top: 1.5em;
+}
+
+p {
+	margin: 1.5em 0;
+}
+
+p:first-of-type {
+	margin-top: 0;
+}
+
+p:last-of-type {
+	margin-bottom: 0;
+}
+
+.contents li, .alerts li, .alert-types > ol > li {
+	margin-top: 1.5em;
+}
+
+.alert-types h4 {
+	margin-bottom: 0;
+}
+
+a {
+	border-radius: .125em;
+}
+
+caption {
+	margin-bottom: 1.5em;
+	text-align: left;
+}
+
+code, .request-method-n-url {
+	overflow-wrap: anywhere;
+	white-space: break-spaces;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+.report-description--container, .report-parameters--container {
+	margin-left: 2ch;
+	padding: 0 2ch;
+}
+
+.about-this-report h3, .summaries h3, .appendix h3 {
+	border-bottom: .05em solid;
+}
+
+.alerts h4 {
+	text-align: center;
+}
+
+.alerts ol {
+	padding-left: 0;
+}
+
+.alerts--site-li {
+	border: .05em solid;
+	border-radius: .25em;
+	margin-left: 2ch;
+	padding: 1.5em 3ch;
+}
+
+.contents ol {
+	list-style-position: inside;
+	list-style-type: square;
+	padding-left: 4ch;
+}
+
+.contexts-list, .sites-list {
+	list-style-type: square;
+}
+
+.risk-confidence-counts-table {
+	width: 100%;
+}
+
+.risk-confidence-counts-table tr {
+	height: 4.5em;
+}
+
+.risk-confidence-counts-table thead > tr {
+	height: 3em;
+}
+
+.risk-confidence-counts-table th[scope="row"], .risk-confidence-counts-table th[scope="rowgroup"] {
+	hyphens: auto;
+	overflow-wrap: anywhere;
+	word-break: break-all;
+}
+
+.risk-confidence-counts-table th[scope="row"] {
+	padding-right: 5%;
+}
+
+@media screen and (max-width: 50em) {
+	.risk-confidence-counts-table th[scope="row"] {
+		padding-right: 1ch;
+	}
+}
+
+.risk-confidence-counts-table th[scope="rowgroup"] {
+	padding: 0 .5ch;
+	vertical-align: middle;
+}
+
+.risk-confidence-counts-table > tbody > tr {
+	border-top: .05em solid;
+}
+
+.risk-confidence-counts-table th[scope="row"], .risk-confidence-counts-table td {
+	vertical-align: top;
+}
+
+.risk-confidence-counts-table th[scope="col"] {
+	vertical-align: bottom;
+}
+
+.risk-confidence-counts-table th[scope="col"], .risk-confidence-counts-table th[scope="row"] {
+	font-family: monospace, monospace;
+	font-weight: bold;
+}
+
+.risk-confidence-counts-table th[scope="colgroup"], .risk-confidence-counts-table th[scope="rowgroup"] {
+	font-weight: normal;
+}
+
+.risk-confidence-counts-table td, .risk-confidence-counts-table th[scope="col"], .risk-confidence-counts-table th[scope="row"] {
+	text-align: right;
+}
+
+.site-risk-counts-table {
+	width: 100%;
+}
+
+.site-risk-counts-table tr {
+	height: 4.5em;
+}
+
+.site-risk-counts-table thead > tr:first-of-type {
+	height: 3em;
+}
+
+.site-risk-counts-table th[scope="row"], .site-risk-counts-table th[scope="col"] {
+	hyphens: auto;
+	overflow-wrap: anywhere;
+	word-break: break-all;
+}
+
+.site-risk-counts-table th[scope="row"] {
+	padding-right: 1%;
+}
+
+@media screen and (max-width: 50em) {
+	.site-risk-counts-table th[scope="row"] {
+		padding-right: 1ch;
+	}
+}
+
+.site-risk-counts-table th[scope="rowgroup"] {
+	padding: 0 .5ch;
+	vertical-align: middle;
+}
+
+.site-risk-counts-table > tbody > tr {
+	border-top: .05em solid;
+}
+
+.site-risk-counts-table th[scope="row"], .site-risk-counts-table td {
+	vertical-align: top;
+}
+
+.site-risk-counts-table th[scope="col"] {
+	vertical-align: bottom;
+}
+
+.site-risk-counts-table th[scope="col"], .site-risk-counts-table th[scope="row"] {
+	font-family: monospace, monospace;
+	font-weight: bold;
+}
+
+.site-risk-counts-table th[scope="colgroup"], .site-risk-counts-table th[scope="rowgroup"] {
+	font-weight: normal;
+}
+
+.site-risk-counts-table td, .site-risk-counts-table th[scope="col"], .site-risk-counts-table th[scope="row"] {
+	text-align: right;
+}
+
+.alert-type-counts-table {
+	width: 100%;
+}
+
+.alert-type-counts-table th, .alert-type-counts-table td {
+	padding: 0 1rem;
+	text-align: left;
+	vertical-align: top;
+}
+
+.alert-type-counts-table td:nth-last-of-type(2) {
+	padding-left: 1.5rem;
+}
+
+.alert-type-counts-table > tbody > tr {
+	border-bottom: 0.05em dotted;
+}
+
+.alert-type-counts-table th[scope="col"] {
+	border-left: 1rem solid;
+}
+
+.alert-type-counts-table th[scope="col"]:first-of-type {
+	border-left: 0;
+}
+
+.alert-type-counts-table th[scope="col"]:last-of-type, .alert-type-counts-table td:last-of-type {
+	text-align: right;
+}
+
+.alert-type-counts-table th[scope="col"], .alert-type-counts-table th[scope="row"] {
+	font-weight: normal;
+}
+
+.alert-type-counts-table th[scope="row"], .alert-type-counts-table td {
+	padding-bottom: 1.5em;
+}
+
+.alert-type-counts-table thead > th:first-of-type {
+	width: 45%;
+}
+
+.alerts-table, .alert-types-table {
+	border-collapse: separate;
+	border-spacing: 2ch 1.5em;
+	width: 100%;
+}
+
+.alerts-table th, .alerts-table td, .alert-types-table th, .alert-types-table td {
+	vertical-align: top;
+}
+
+.alerts-table td, .alert-types-table td {
+	overflow-wrap: anywhere;
+}
+
+.alerts-table th, .alert-types-table th {
+	padding: 0 1ch;
+}
+
+.alerts-table td, .alert-types-table td {
+	padding: 0 2ch;
+}
+
+.alerts-table summary {
+	margin-bottom: 1.5em;
+}
+
+.alert-tags-list {
+	list-style-position: inside;
+	list-style-type: square;
+	padding-left: 0;
+}
+
+.alert-tags-list > li {
+	margin-top: 0;
+}
+
+.request-body, .response-body {
+	margin-top: 1.5em;
+}
+
+.request-method-n-url {
+	margin-bottom: 0;
+}
+
+.alert-types-table {
+	padding-top: 0;
+}
+
+.alert-types-table th {
+	width: 20%;
+}
+
+.alert-types-table ol {
+	list-style-position: inside;
+	list-style-type: square;
+	padding-left: 0;
+}
+
+.alert-types-table li:not(:first-of-type) {
+	margin-top: 1.5em;
+}
+
+p.alert-types-intro {
+	margin-bottom: 3em;
+}
+
+.zap-logo {
+	height: 1em;
+	margin-right: .25ch;
+	width: 1em;
+}
+
+h1, h2 {
+	font-family: Georgia, serif;
+}
+
+.risk-level, .confidence-level, .included-risk-codes, .included-confidence-codes, .additional-info-percentages {
+	font-family: monospace, monospace;
+}
+
+.context, .site, .request-method-n-url {
+	font-family: monospace, monospace;
+}
+
+
+/* === themes/original/colors.css === */
+body {
+	background-color: #306aa0;
+	background-image: radial-gradient(circle at top left, #fff 0%, #8ce1d6 15em, #306aa0 100em, #386095 100%);
+}
+
+main, footer {
+	background-color: #fff;
+}
+
+header {
+	background-color: #00549e;
+	color: #fff;
+}
+
+a:link {
+	color: #004380;
+}
+
+a:visited {
+	color: #770d67;
+}
+
+a:focus {
+	background-color: #ffd54d;
+}
+
+a:hover {
+	background-color: #ffd54d;
+}
+
+a:active {
+	background-color: #ffd54d;
+	color: #003261;
+	outline-color: #f4ba00;
+}
+
+header a:link {
+	color: #f2f7fd;
+}
+
+header a:visited {
+	color: #f2b5e9;
+}
+
+header a:focus {
+	background-color: #ffd54d;
+	color: #004380;
+}
+
+header a:hover {
+	background-color: #ffd54d;
+	color: #004380;
+}
+
+header a:active {
+	background-color: #ffd54d;
+	color: #003261;
+	outline-color: #fff6db;
+}
+
+summary:focus {
+	background-color: #ffd54d;
+}
+
+summary:hover {
+	background-color: #ffd54d;
+}
+
+summary:active {
+	background-color: #ffd54d;
+	color: #003261;
+	outline-color: #f4ba00;
+}
+
+h2, h3, h4, h5, h6 {
+	color: #00549e;
+}
+
+.risk-level, .confidence-level {
+	color: #00549e;
+}
+
+.risk-confidence-counts-table th[scope="colgroup"], .risk-confidence-counts-table th[scope="rowgroup"] {
+	background-color: #00549e;
+	color: #fff;
+}
+
+.risk-confidence-counts-table th[scope="col"], .risk-confidence-counts-table th[scope="row"] {
+	color: #00549e;
+}
+
+.risk-confidence-counts-table > tbody > tr {
+	border-top-color: #00549e;
+}
+
+.site-risk-counts-table th[scope="colgroup"], .site-risk-counts-table th[scope="rowgroup"] {
+	background-color: #00549e;
+	color: #fff;
+}
+
+.site-risk-counts-table th[scope="col"], .site-risk-counts-table th[scope="row"] {
+	color: #00549e;
+}
+
+.site-risk-counts-table > tbody > tr {
+	border-top-color: #00549e;
+}
+
+.alert-type-counts-table > tbody > tr {
+	border-bottom-color: #00549e;
+}
+
+.alert-type-counts-table th[scope="col"] {
+	background-color: #00549e;
+	color: #fff;
+}
+
+.alert-type-counts-table th[scope="col"] {
+	border-left-color: #fff;
+}
+
+.alerts-table th, .alert-types-table th {
+	background-color: #306aa0;
+	color: #fff;
+}
+
+.additional-info-percentages {
+	color: #00549e;
+}
+
+</style>
+
+
+</head>
+<body>
+	<header>
+		<h1>Juice-shop-alb with WAF</h1>
+		<p>
+			<span>Generated with</span> <a href="https://zaproxy.org"><img
+				src="data:image/png;base64,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" alt="The ZAP logo" class="zap-logo">ZAP</a>
+			<span>on qua. 3 set. 2025, at 23:01:58</span>
+		</p>
+		<p>ZAP Version: 2.16.1</p>
+		<p>
+			ZAP by <a href="https://checkmarx.com/">Checkmarx</a>
+		</p>
+	</header>
+
+	<main>
+
+		<section id="contents" class="contents">
+			<h2>Contents</h2>
+			<nav>
+				<ol>
+					<li><a
+						href="#about-this-report">About This Report</a>
+						<ol>
+							<li><a
+								href="#report-description">Report Description</a></li>
+							<li><a
+								href="#report-parameters">Report Parameters</a></li>
+						</ol></li>
+					
+				</ol>
+			</nav>
+		</section>
+
+		<section
+			id="about-this-report" class="about-this-report">
+			<h2>About This Report</h2>
+
+			<section
+				id="report-description">
+				<h3>Report Description</h3>
+				<div class="report-description--container">
+					
+
+<p>
+	
+	  Scan utilizando URL que aponta para o ALB com WAF ativo! 
+	  
+</p>
+ 
+				</div>
+			</section>
+
+			<section
+				id="report-parameters">
+				<h3>Report Parameters</h3>
+				<div class="report-parameters--container">
+					<h4>Contexts</h4>
+					
+					
+					
+					
+					<p>The following contexts were selected to be included:</p>
+					<ul class="contexts-list">
+						<li><span
+							class="context">Contexto Padrão</span></li>
+					</ul>
+					  
+
+					<h4>Sites</h4>
+					
+					<p>The following sites were included:</p>
+					<ul class="sites-list">
+						<li><span class="site">https://firefox-settings-attachments.cdn.mozilla.net</span></li>
+						<li><span class="site">https://firefox.settings.services.mozilla.com</span></li>
+						<li><span class="site">http://cdnjs.cloudflare.com</span></li>
+						<li><span class="site">http://juce-shop-alb-656313811.us-east-2.elb.amazonaws.com</span></li>
+					</ul>
+					
+					<p>(If no sites were selected, all sites were included by default.)</p>
+					<p>An included site must also be within one of the included contexts for its data to be included in the report.</p>
+
+					<h4>Risk levels</h4>
+					<p>
+						<span>Included</span>:
+						 
+						<span class="included-risk-codes"><span class="risk-level">Alto</span>, <span class="risk-level">Médio</span>, <span class="risk-level">Baixo</span>, <span class="risk-level">Informativo</span></span>
+					</p>
+					<p>
+						<span>Excluded</span>:
+						 <span>None</span>
+						
+					</p>
+
+					<h4>Confidence levels</h4>
+					<p>
+						<span>Included</span>:
+						
+						
+						<span class="included-confidence-codes"><span class="confidence-level">User Confirmed</span>, <span class="confidence-level">Alto</span>, <span class="confidence-level">Médio</span>, <span class="confidence-level">Baixo</span></span>
+					</p>
+					<p>
+						<span>Excluded</span>:
+						
+						
+						<span class="included-confidence-codes"> <span class="confidence-level">User Confirmed</span>, <span class="confidence-level">Alto</span>, <span class="confidence-level">Médio</span>, <span class="confidence-level">Baixo</span>, <span class="confidence-level">Falso Positivo</span></span>
+					</p>
+				</div>
+			</section>
+		</section>
+
+		
+		<section>
+			<p>
+				<strong>No alerts were found within the report parameters.</strong>
+			</p>
+		</section>
+		 
+	</main>
+</body>
+</html>
+
+
+
